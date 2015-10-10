@@ -1,0 +1,111 @@
+var balls = [];
+var triggerState = 0;
+
+//draw bubbles
+var Bubble = {
+  radius: 20,
+  speed: 5,
+  colorchange: 10,
+  display: function() {
+    for (var m = 0; m <= width; m += 50) {
+      for (var n = 0; n <= height; n += 50) {
+        var dis = dist(mouseX, mouseY, m, n);
+        if (dis < 90) {
+          this.r = 8;
+          this.g = 209;
+          this.b = 162;
+          fill(this.r, this.g, this.b);
+          this.radius += random(1, 5)
+            //yellow circle
+          if (m < width * 3 / 10 && m > width / 5 && n < height * 7 / 8 && n > height * 3 / 4) {
+            this.r = 255;
+            this.g = 221;
+            this.b = 0;
+            fill(this.r, this.g, this.b);
+            if (mouseIsPressed) {
+              this.radius += this.speed;
+              this.speed += 0.5;
+              this.r += this.colorchange;
+              this.g += this.colorchange;
+              this.b += this.colorchange;
+              this.colorchange += 30
+              fill(this.r, this.g, this.b);
+              if (this.radius > 50) {
+                this.radius = 20 + random(1, 5);
+                triggerState == 4
+              }
+            }
+          }
+        } else {
+          noFill();
+          this.radius = 20;
+        }
+        stroke(255);
+        ellipse(m + random(-1, 1), n + random(-1, 1), this.radius, this.radius);
+      }
+    }
+  }
+}
+
+function setup() {
+  createCanvas(1000, 600);
+  for (var i = 0; i < 100; i++) {
+    balls[i] = new Ball();
+  }
+}
+
+function draw() {
+  if (triggerState == 0) {
+    background(0);
+    for (var i = 0; i < balls.length; i++) {
+      balls[i].move();
+      balls[i].display();
+      balls[i].limit();
+    }
+  } else if (triggerState == 1) {
+    balls.push(new Ball());
+  } else if (triggerState == 2) {
+    balls.push(new Ball());
+  } else if (triggerState == 3) {
+    Bubble.display();
+  }
+}
+
+function Ball() {
+  this.x = width / 2;
+  this.y = height / 2;
+
+  this.display = function() {
+    stroke(255);
+    noFill();
+    ellipse(this.x, this.y, 20, 20);
+  }
+
+  this.move = function() {
+    this.x += random(-0.8, 0.8);
+    this.y += random(-0.8, 0.8);
+  }
+
+  this.limit = function() {
+    if (this.x <= width / 2 - 10 || this.x >= width / 2 + 10 || this.y <= height / 2 - 10 || this.y >= height / 2 + 10) {
+      this.x = width / 2;
+      this.y = height / 2;
+    }
+  }
+}
+
+function mousePressed() {
+  var d = dist(mouseX, mouseY, width / 2, height / 2);
+  if (triggerState == 0 && d < 20) {
+    balls.splice(new Ball());
+    triggerState = 1;
+  }
+  if (triggerState === 1 && d < 20) {
+    balls.splice(new Ball());
+    triggerState = 2;
+  }
+  if (triggerState === 2 && d < 20) {
+    balls.splice(new Ball());
+    triggerState = 3;
+  }
+}
