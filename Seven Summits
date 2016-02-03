@@ -1,0 +1,150 @@
+var summitsData;
+var img;
+var music, soundeffect;
+var myFont, myFont2;
+var snow = [];
+var altitude = [];
+var r, g, b;
+var dia;
+var dis;
+
+function preload() {
+  summitsData = loadJSON("summits.json");
+  img = loadImage("assets/summits.jpg");
+  myFont = loadFont('assets/Isocpeur.TTF');
+  myFont2 = loadFont('assets/HelveticaNeueLTPro-Th.otf');
+  music = loadSound("assets/After Midnight.m4a");
+  //soundeffect = loadSound("assets/ding.wav")
+}
+
+function setup() {
+  createCanvas(1000, 600);
+  music.play();
+
+  for (var i = 0; i < 40; i++) {
+    snow[i] = new Snow(random(width), random(height));
+  }
+
+  for (var j = 0; j < 6; j++) {
+    altitude[j] = new Altitude(j * 65 + 80);
+  }
+}
+
+function draw() {
+  background(44);
+  image(img, 500, 0);
+
+  for (var i = 0; i < snow.length; i++) {
+    snow[i].move();
+    snow[i].transparency();
+    snow[i].renew();
+    snow[i].display();
+  }
+
+  for (var j = 0; j < altitude.length; j++) {
+    altitude[j].display();
+  }
+
+  AltitudeNum();
+  title();
+
+  Points(355, 95, summitsData.summits1.elevation / 250, 405, 100, summitsData.summits1.name, width * 3 / 4, summitsData.summits1.elevation, summitsData.summits1.continent, summitsData.summits1.country, summitsData.summits1.first_ascent);
+  Points(305, 230, summitsData.summits2.elevation / 250, 360, 235, summitsData.summits2.name, width / 2 + 90, summitsData.summits2.elevation, summitsData.summits2.continent, summitsData.summits2.country, summitsData.summits2.first_ascent);
+  Points(290, 260, summitsData.summits3.elevation / 250, 325, 265, summitsData.summits3.name, width / 2 + 120, summitsData.summits3.elevation, summitsData.summits3.continent, summitsData.summits3.country, summitsData.summits3.first_ascent);
+  Points(420, 290, summitsData.summits4.elevation / 250, 465, 295, summitsData.summits4.name, width * 3 / 4 + 160, summitsData.summits4.elevation, summitsData.summits4.continent, summitsData.summits4.country, summitsData.summits4.first_ascent);
+  Points(128, 300, summitsData.summits5.elevation / 250, 165, 305, summitsData.summits5.name, width * 3 / 4, summitsData.summits5.elevation, summitsData.summits5.continent, summitsData.summits5.country, summitsData.summits5.first_ascent);
+  Points(130, 355, summitsData.summits6.elevation / 250, 163, 360, summitsData.summits6.name, width - 90, summitsData.summits6.elevation, summitsData.summits6.continent, summitsData.summits6.country, summitsData.summits6.first_ascent);
+  Points(60, 358, summitsData.summits7.elevation / 250, 105, 380, summitsData.summits7.name, width * 3 / 4 + 50, summitsData.summits7.elevation, summitsData.summits7.continent, summitsData.summits7.country, summitsData.summits7.first_ascent);
+}
+
+function Points(el_x, el_y, dia, text_x, text_y, text_content, text2_x, elev, conti, cty, fisr_as) {
+  textSize(12);
+  textFont(myFont2);
+  dis = dist(el_x, el_y, mouseX, mouseY);
+  if (dis <= dia / 2) {
+    push();
+    noStroke();
+    fill(50, 180);
+    rect(text2_x - 82, el_y - 6, 164, 90)
+    fill(255);
+    textSize(15)
+    text("Elevation: " + elev, text2_x, el_y + 20);
+    text("Continent: " + conti, text2_x, el_y + 20 + 15);
+    text("Country: " + cty, text2_x, el_y + 20 + 30);
+    text("First ascent: " + fisr_as, text2_x, el_y + 20 + 45)
+    r = 255
+    g = 0
+    b = 5
+  } else {
+    r = 255
+    g = 255
+    b = 255
+  }
+  fill(r, g, b)
+  ellipse(el_x, el_y, dia, dia);
+  text(text_content, text_x, text_y);
+
+}
+
+function Snow(x, y) {
+  this.transparent = random(50, 250);
+  this.x = x;
+  this.y = y;
+
+  this.display = function() {
+    fill(255, this.transparent);
+    noStroke();
+    ellipse(this.x, this.y, 3, 3);
+  }
+
+  this.move = function() {
+    this.y = this.y += random(0, 3);
+  }
+
+  this.transparency = function() {
+    if (this.transparent > 0) {
+      this.transparent -= 1;
+    } else {
+      this.transparent = random(100, 250);
+    }
+  }
+
+  this.renew = function() {
+    if (this.y > height) {
+      this.y = 0
+    }
+  }
+}
+
+function Altitude(y) {
+  this.y = y;
+
+  this.display = function() {
+    strokeWeight(0.5);
+    stroke(80);
+    line(0, this.y, width / 2, this.y);
+    stroke(170);
+    line(width / 2, this.y, width, this.y);
+  }
+}
+
+function AltitudeNum() {
+  fill(80);
+  noStroke();
+  text("9000", width / 2 - 35, 80 - 5)
+  text("8000", width / 2 - 35, 1 * 65 + 75)
+  text("7000", width / 2 - 35, 2 * 65 + 75)
+  text("6000", width / 2 - 35, 3 * 65 + 75)
+  text("5000", width / 2 - 35, 4 * 65 + 75)
+  text("4000", width / 2 - 35, 5 * 65 + 75)
+}
+
+function title() {
+  fill(255);
+  textAlign(CENTER);
+  textSize(30)
+  textFont(myFont);
+  text("SE7EN", width / 4, height - 60);
+  textSize(20.5);
+  text("SUMMITS", width / 4, height - 40);
+}
