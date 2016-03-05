@@ -4,16 +4,18 @@ var triggerState = 0;
 //draw bubbles
 var Bubble = {
   radius: 20,
-  speed: 5,
+ // speed: 5,
   colorchange: 10,
+  increment:20,
+  Max:50,
   display: function() {
     for (var m = 0; m <= width; m += 50) {
       for (var n = 0; n <= height; n += 50) {
         var dis = dist(mouseX, mouseY, m, n);
         if (dis < 90) {
-          this.r = 8;
-          this.g = 209;
-          this.b = 162;
+          this.r = 129;
+          this.g = 33;
+          this.b = 255;
           fill(this.r, this.g, this.b);
           this.radius += random(1, 5)
             //yellow circle
@@ -23,16 +25,20 @@ var Bubble = {
             this.b = 0;
             fill(this.r, this.g, this.b);
             if (mouseIsPressed) {
-              this.radius += this.speed;
-              this.speed += 0.5;
-              this.r += this.colorchange;
-              this.g += this.colorchange;
-              this.b += this.colorchange;
-              this.colorchange += 30
+              noStroke();
+              textStyle(BOLD);
+              fill(0,255,179);
+              textAlign(CENTER);
+              textSize(30);
+              text("Hi,i'm green bubble now. Nice to meet you ◕‿◕ ",width/2,height/2-12);
+              this.radius += this.increment;
+              this.increment = this.increment+1;
+              this.r = random(0,50);
+              this.g = random(200,230);
+              this.b = random(50,200);              
               fill(this.r, this.g, this.b);
-              if (this.radius > 50) {
-                this.radius = 20 + random(1, 5);
-                triggerState == 4
+              if (this.radius > this.Max) {
+                this.increment =this.increment-30;
               }
             }
           }
@@ -55,8 +61,12 @@ function setup() {
 }
 
 function draw() {
+  background(0);
+  fill(255);
+  textSize(10);
+  textFont("Georgia");
+  text("click and find yellow bubble, press it after you find",30,30);
   if (triggerState == 0) {
-    background(0);
     for (var i = 0; i < balls.length; i++) {
       balls[i].move();
       balls[i].display();
@@ -64,9 +74,11 @@ function draw() {
     }
   } else if (triggerState == 1) {
     balls.push(new Ball());
+    
   } else if (triggerState == 2) {
     balls.push(new Ball());
-  } else if (triggerState == 3) {
+    
+  } else{
     Bubble.display();
   }
 }
@@ -100,11 +112,11 @@ function mousePressed() {
     balls.splice(new Ball());
     triggerState = 1;
   }
-  if (triggerState === 1 && d < 20) {
+  if (triggerState == 1 && d < 20) {
     balls.splice(new Ball());
     triggerState = 2;
   }
-  if (triggerState === 2 && d < 20) {
+  if (triggerState == 2 && d < 20) {
     balls.splice(new Ball());
     triggerState = 3;
   }
